@@ -9,9 +9,10 @@ class Counter extends Component {
     fontSize: 50,
     fontWeight: "bold",
   };
-  handleIncrement() {
-    console.log("increment Clicked");
-  }
+
+  handleIncrement = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
   render() {
     return (
       <div>
