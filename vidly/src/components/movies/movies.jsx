@@ -17,28 +17,6 @@ class Movies extends Component {
     sortColumn: { path: "title", order: "asc" },
   };
 
-  deleteMovie = (mov) =>
-    this.setState({
-      movies: this.state.movies.filter((movie) => movie._id !== mov._id),
-    });
-
-  handleLike = (mov) => {
-    const movies = [...this.state.movies];
-    const index = movies.indexOf(mov);
-    movies[index] = { ...movies[index] };
-    movies[index].liked = !movies[index].liked;
-    this.setState({ movies });
-  };
-
-  handlePageChange = (page) => {
-    this.setState({ currentPage: page });
-  };
-  handleGenre = (genre) => {
-    this.setState({ selectedGenre: genre, currentPage: 1 });
-  };
-  handleSort = (sortColumn) => {
-    this.setState({ sortColumn });
-  };
   render() {
     const {
       pageSize,
@@ -49,18 +27,18 @@ class Movies extends Component {
       sortColumn,
     } = this.state;
 
-    const filtgenre = movies.filter((m) => {
-      if (selectedGenre === "All Genres") return m;
-      return m.genre.name === selectedGenre ? m : "";
-    });
+    const { moviesLength, filtmovies } = this.getPagedData(
+      movies,
+      selectedGenre,
+      sortColumn,
+      currentPage,
+      pageSize
+    );
 
-    const sorted = _.orderBy(filtgenre, [sortColumn.path], [sortColumn.order]);
-
-    const filtmovies = paginate(sorted, currentPage, pageSize);
-    const moviesLength = filtgenre.length;
     const styles = {
       marginTop: 200,
     };
+
     return (
       <div className="row mx-auto" style={styles}>
         <div className="col-3">
@@ -89,6 +67,42 @@ class Movies extends Component {
         </div>
       </div>
     );
+  }
+
+  deleteMovie = (mov) =>
+    this.setState({
+      movies: this.state.movies.filter((movie) => movie._id !== mov._id),
+    });
+
+  handleLike = (mov) => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(mov);
+    movies[index] = { ...movies[index] };
+    movies[index].liked = !movies[index].liked;
+    this.setState({ movies });
+  };
+
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  };
+  handleGenre = (genre) => {
+    this.setState({ selectedGenre: genre, currentPage: 1 });
+  };
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
+  };
+
+  getPagedData(movies, selectedGenre, sortColumn, currentPage, pageSize) {
+    const filtgenre = movies.filter((m) => {
+      if (selectedGenre === "All Genres") return m;
+      return m.genre.name === selectedGenre ? m : "";
+    });
+
+    const sorted = _.orderBy(filtgenre, [sortColumn.path], [sortColumn.order]);
+
+    const filtmovies = paginate(sorted, currentPage, pageSize);
+    const moviesLength = filtgenre.length;
+    return { moviesLength, filtmovies };
   }
 }
 
