@@ -1,9 +1,6 @@
 .App {
   text-align: center;
 }
-* {
-  padding: 10px;
-}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -14,7 +11,9 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.navbar {
+  margin-bottom: 30px;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

@@ -6,7 +6,6 @@ import GenreGroup from "../common/genregroup";
 import { getGenres } from "../../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
-
 class Movies extends Component {
   state = {
     movies: getMovies(),
@@ -34,38 +33,35 @@ class Movies extends Component {
       currentPage,
       pageSize
     );
-
-    const styles = {
-      marginTop: 200,
-    };
-
     return (
-      <div className="row mx-auto" style={styles}>
-        <div className="col-3">
-          <GenreGroup
-            lgenres={genres}
-            genreClicked={this.handleGenre}
-            selectedGenre={selectedGenre}
-          />
-        </div>
+      <React.Fragment>
+        <div className="row mx-auto">
+          <div className="col-3">
+            <GenreGroup
+              lgenres={genres}
+              genreClicked={this.handleGenre}
+              selectedGenre={selectedGenre}
+            />
+          </div>
 
-        <div className="col">
-          <h3>Showing {moviesLength} movies in the database.</h3>
-          <MoviesTable
-            filtmovies={filtmovies}
-            onLike={this.handleLike}
-            onDelete={this.deleteMovie}
-            onSort={this.handleSort}
-            sortColumn={sortColumn}
-          ></MoviesTable>
-          <Pagination
-            itemsCount={moviesLength}
-            pageSize={pageSize}
-            onPageChange={this.handlePageChange}
-            currentPage={currentPage}
-          ></Pagination>
+          <div className="col">
+            <h3>Showing {moviesLength} movies in the database.</h3>
+            <MoviesTable
+              filtmovies={filtmovies}
+              onLike={this.handleLike}
+              onDelete={this.deleteMovie}
+              onSort={this.handleSort}
+              sortColumn={sortColumn}
+            ></MoviesTable>
+            <Pagination
+              itemsCount={moviesLength}
+              pageSize={pageSize}
+              onPageChange={this.handlePageChange}
+              currentPage={currentPage}
+            ></Pagination>
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 
