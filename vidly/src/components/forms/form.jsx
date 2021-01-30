@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Joi from "joi-browser";
 import Input from "./input";
+import DropDown from "./dropdown";
 class Form extends Component {
   state = { data: {}, errors: {} };
 
@@ -27,6 +28,8 @@ class Form extends Component {
     const errors = this.validate();
     this.setState({ errors: errors || {} });
     if (errors) return;
+
+    this.doSubmit();
   };
 
   handleChange = ({ currentTarget: input }) => {
@@ -59,6 +62,20 @@ class Form extends Component {
         error={errors[name]}
         type={type}
       ></Input>
+    );
+  }
+  renderDropDown(name, label, options) {
+    const { data, errors } = this.state;
+
+    return (
+      <DropDown
+        name={name}
+        value={data[name]}
+        label={label}
+        onChange={this.handleChange}
+        error={errors[name]}
+        options={options}
+      ></DropDown>
     );
   }
 }

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { getMovies } from "../../services/fakeMovieService";
-import Pagination from "../common/pagination";
+import Pagination from "../utils/pagination";
 import { paginate } from "../utils/paginate";
 import GenreGroup from "../common/genregroup";
 import { getGenres } from "../../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
+import { Link } from "react-router-dom";
+
 class Movies extends Component {
   state = {
     movies: getMovies(),
@@ -43,8 +45,10 @@ class Movies extends Component {
               selectedGenre={selectedGenre}
             />
           </div>
-
           <div className="col">
+            <button className="btn btn-primary btn-submit">
+              <Link to="movies/new">New Movie</Link>
+            </button>
             <h3>Showing {moviesLength} movies in the database.</h3>
             <MoviesTable
               filtmovies={filtmovies}
