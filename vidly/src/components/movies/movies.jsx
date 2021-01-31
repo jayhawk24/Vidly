@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getMovies } from "../../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../../services/fakeMovieService";
 import Pagination from "../utils/pagination";
 import { paginate } from "../utils/paginate";
 import GenreGroup from "../common/genregroup";
@@ -46,14 +46,18 @@ class Movies extends Component {
             />
           </div>
           <div className="col">
-            <button className="btn btn-primary btn-submit">
+            <button
+              className="btn btn-primary btn-submit"
+              style={{ marginBottom: 20 }}
+            >
               <Link to="movies/new">New Movie</Link>
             </button>
             <h3>Showing {moviesLength} movies in the database.</h3>
+            {console.log(filtmovies)}
             <MoviesTable
               filtmovies={filtmovies}
               onLike={this.handleLike}
-              onDelete={this.deleteMovie}
+              onDelete={this.deleteMov}
               onSort={this.handleSort}
               sortColumn={sortColumn}
             ></MoviesTable>
@@ -69,10 +73,12 @@ class Movies extends Component {
     );
   }
 
-  deleteMovie = (mov) =>
-    this.setState({
+  deleteMov = (mov) => {
+    deleteMovie(mov._id);
+    return this.setState({
       movies: this.state.movies.filter((movie) => movie._id !== mov._id),
     });
+  };
 
   handleLike = (mov) => {
     const movies = [...this.state.movies];
