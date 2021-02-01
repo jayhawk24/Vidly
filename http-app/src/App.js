@@ -2,30 +2,42 @@ import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
 
+const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 class App extends Component {
   state = {
     posts: [],
   };
   async componentDidMount() {
-    const promise = axios.get("https://jsonplaceholder.typicode.com/posts");
+    const promise = axios.get(apiEndpoint);
     const response = await promise;
-    console.log(response);
     this.setState({ posts: response.data });
   }
 
-  handleAdd = () => {
-    console.log("Add");
+  handleAdd = async () => {
+    const obj = { title: "a", body: "b" };
+    const { data: post } = await axios.post(apiEndpoint, obj);
+
+    const posts = [post, ...this.state.posts];
+    this.setState({ posts });
   };
 
-  handleUpdate = (post) => {
-    console.log("Update", post);
+  handleUpdate = async (post) => {
+    post.title = "Updated";
+    await axios.put(apiEndpoint + "/" + post.id, post);
+    const posts = [...this.state.posts];
+    const index = posts.indexOf(post);
+    posts[index] = { ...post };
+    this.setState({ posts });
   };
 
-  handleDelete = (post) => {
-    console.log("Delete", post);
+  handleDelete = async (post) => {
+    await axios.delete(apiEndpoint + "/" + post.id);
+    const posts = this.state.posts.filter((p) => p.id !== post.id);
+    this.setState({ posts });
   };
 
   render() {
+    let i = 1;
     return (
       <React.Fragment>
         <button className="btn btn-primary" onClick={this.handleAdd}>
@@ -34,6 +46,7 @@ class App extends Component {
         <table className="table">
           <thead>
             <tr>
+              <th>No.</th>
               <th>Title</th>
               <th>Update</th>
               <th>Delete</th>
@@ -42,6 +55,7 @@ class App extends Component {
           <tbody>
             {this.state.posts.map((post) => (
               <tr key={post.id}>
+                <td>{i++}</td>
                 <td>{post.title}</td>
                 <td>
                   <button
