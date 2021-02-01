@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { getMovies, deleteMovie } from "../../services/fakeMovieService";
 import Pagination from "../utils/pagination";
 import { paginate } from "../utils/paginate";
