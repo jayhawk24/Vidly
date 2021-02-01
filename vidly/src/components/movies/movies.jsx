@@ -7,8 +7,10 @@ import { getGenres } from "../../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import Form from "../forms/form";
+import Search from "../forms/search";
 
-class Movies extends Component {
+class Movies extends Form {
   state = {
     movies: getMovies(),
     pageSize: 5,
@@ -26,6 +28,7 @@ class Movies extends Component {
       selectedGenre,
       genres,
       sortColumn,
+      searchQuery,
     } = this.state;
 
     const { moviesLength, filtmovies } = this.getPagedData(
@@ -33,7 +36,8 @@ class Movies extends Component {
       selectedGenre,
       sortColumn,
       currentPage,
-      pageSize
+      pageSize,
+      searchQuery
     );
     return (
       <React.Fragment>
@@ -53,7 +57,11 @@ class Movies extends Component {
               <Link to="movies/new">New Movie</Link>
             </button>
             <h3>Showing {moviesLength} movies in the database.</h3>
-            {console.log(filtmovies)}
+
+            <Search
+              value={this.state.query}
+              onChange={this.handleSearch}
+            ></Search>
             <MoviesTable
               filtmovies={filtmovies}
               onLike={this.handleLike}
@@ -98,9 +106,23 @@ class Movies extends Component {
     this.setState({ sortColumn });
   };
 
-  getPagedData(movies, selectedGenre, sortColumn, currentPage, pageSize) {
+  handleSearch = (query) => {
+    this.setState({ selectedGenre: null, currentPage: 1, searchQuery: query });
+  };
+
+  getPagedData(
+    movies,
+    selectedGenre,
+    sortColumn,
+    currentPage,
+    pageSize,
+    searchQuery
+  ) {
     const filtgenre = movies.filter((m) => {
-      if (selectedGenre === "All Genres") return m;
+      if (searchQuery) {
+        return m.title.toLowerCase().includes(searchQuery.toLowerCase());
+      } else if (selectedGenre === "All Genres" || selectedGenre === null)
+        return m;
       return m.genre.name === selectedGenre ? m : "";
     });
 
