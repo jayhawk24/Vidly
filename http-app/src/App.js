@@ -2,6 +2,19 @@ import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
 
+axios.interceptors.response.use(null, (error) => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+
+  if (!expectedError) {
+    console.log("Logging the error", error);
+    alert("Unexpected error occured");
+  }
+  return Promise.reject(error);
+});
+
 const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 class App extends Component {
   state = {
@@ -31,9 +44,17 @@ class App extends Component {
   };
 
   handleDelete = async (post) => {
-    await axios.delete(apiEndpoint + "/" + post.id);
+    const originalPosts = this.state.posts;
     const posts = this.state.posts.filter((p) => p.id !== post.id);
     this.setState({ posts });
+    try {
+      await axios.delete(apiEndpoint + "/99" + post.id);
+    } catch (e) {
+      if (e.response && e.response.status === 404)
+        alert("This post is already deleted.");
+
+      this.setState({ posts: originalPosts });
+    }
   };
 
   render() {
