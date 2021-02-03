@@ -1,8 +1,8 @@
 import React from "react";
 import Form from "../forms/form";
 import Joi from "joi-browser";
-import { getGenres } from "../../services/fakeGenreService";
-import { getMovie, saveMovie } from "../../services/fakeMovieService";
+import { getGenres } from "../../services/genreService";
+import { getMovie, saveMovie } from "../../services/movieService";
 class MovieForm extends Form {
   state = {
     data: {
@@ -11,7 +11,7 @@ class MovieForm extends Form {
       numberInStock: "",
       dailyRentalRate: "",
     },
-    genres: [],
+    genres: "",
     errors: {},
   };
   schema = {
@@ -22,19 +22,25 @@ class MovieForm extends Form {
     dailyRentalRate: Joi.number().required().min(0).max(5).label("Rate"),
   };
 
-  componentDidMount() {
-    const genres = getGenres();
-    this.setState({ genres });
-    const movieId = this.props.match.params.id;
-    if (movieId === "new") return;
+  async componentDidMount() {
+    // Populating Genres
 
-    const movie = getMovie(movieId);
+    const { data } = await getGenres();
+    this.setState({ genres: data });
 
-    if (!movie) return this.props.history.replace("/not-found");
+    // Populating Movies
 
-    this.setState({
-      data: this.mapToViewModel(movie),
-    });
+    try {
+      const movieId = this.props.match.params.id;
+      if (movieId === "new") return;
+      const { data: movie } = await getMovie(movieId);
+      this.setState({
+        data: this.mapToViewModel(movie),
+      });
+    } catch (e) {
+      if (e.response && e.response.status === 404)
+        this.props.history.replace("/not-found");
+    }
   }
 
   mapToViewModel(mov) {
@@ -47,13 +53,14 @@ class MovieForm extends Form {
     };
   }
 
-  doSubmit = () => {
-    saveMovie(this.state.data);
+  doSubmit = async () => {
+    await saveMovie(this.state.data);
     this.props.history.push("/movies");
   };
 
   render() {
     const { match } = this.props;
+    if (!this.state.genres) return null;
     return (
       <div>
         <h1>MovieForm {match.params.id} </h1>

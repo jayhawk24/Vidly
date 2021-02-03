@@ -1,5 +1,5 @@
 import React from "react";
-import { getMovies, deleteMovie } from "../../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../../services/movieService";
 import Pagination from "../utils/pagination";
 import { paginate } from "../utils/paginate";
 import GenreGroup from "../common/genregroup";
@@ -9,10 +9,11 @@ import _ from "lodash";
 import { Link } from "react-router-dom";
 import Form from "../forms/form";
 import Search from "../forms/search";
+import { toast } from "react-toastify";
 
 class Movies extends Form {
   state = {
-    movies: getMovies(),
+    movies: "",
     pageSize: 5,
     currentPage: 1,
     genres: "",
@@ -22,8 +23,9 @@ class Movies extends Form {
 
   async componentDidMount() {
     const { data } = await getGenres();
+    const { data: movies } = await getMovies();
     const genres = [{ _id: "", name: "All Genres" }, ...data];
-    this.setState({ genres: genres });
+    this.setState({ genres, movies });
   }
 
   render() {
@@ -36,6 +38,8 @@ class Movies extends Form {
       sortColumn,
       searchQuery,
     } = this.state;
+
+    if (!movies) return null;
 
     const { moviesLength, filtmovies } = this.getPagedData(
       movies,
@@ -87,11 +91,18 @@ class Movies extends Form {
     );
   }
 
-  deleteMov = (mov) => {
-    deleteMovie(mov._id);
-    return this.setState({
-      movies: this.state.movies.filter((movie) => movie._id !== mov._id),
-    });
+  deleteMov = async (mov) => {
+    const originalMovies = this.state.movies;
+    const movies = originalMovies.filter((movie) => movie._id !== mov._id);
+    this.setState({ movies });
+    try {
+      await deleteMovie(mov._id);
+    } catch (e) {
+      if (e.response && e.response.status === 404) {
+        toast.error("This movie is not found. Already Deleted?");
+        this.setState({ movies: originalMovies });
+      }
+    }
   };
 
   handleLike = (mov) => {
