@@ -10,9 +10,13 @@ import MovieForm from "./components/common/movieform";
 import LoginForm from "./components/forms/loginform";
 import RegisterForm from "./components/forms/registerform";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   return (
     <React.Fragment>
+      <ToastContainer></ToastContainer>
       <NavBar />
       <main className="container">
         <Switch>

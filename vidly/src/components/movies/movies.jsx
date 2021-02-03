@@ -3,7 +3,7 @@ import { getMovies, deleteMovie } from "../../services/fakeMovieService";
 import Pagination from "../utils/pagination";
 import { paginate } from "../utils/paginate";
 import GenreGroup from "../common/genregroup";
-import { getGenres } from "../../services/fakeGenreService";
+import { getGenres } from "../../services/genreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 import { Link } from "react-router-dom";
@@ -15,10 +15,16 @@ class Movies extends Form {
     movies: getMovies(),
     pageSize: 5,
     currentPage: 1,
-    genres: getGenres(),
+    genres: "",
     selectedGenre: "All Genres",
     sortColumn: { path: "title", order: "asc" },
   };
+
+  async componentDidMount() {
+    const { data } = await getGenres();
+    const genres = [{ _id: "", name: "All Genres" }, ...data];
+    this.setState({ genres: genres });
+  }
 
   render() {
     const {

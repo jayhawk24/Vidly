@@ -2,6 +2,9 @@ import React from "react";
 
 const GenreGroup = (props) => {
   const { lgenres, genreClicked, selectedGenre } = props;
+
+  if (!lgenres) return null;
+
   const listgenres = lgenres.map((g) => (
     <li
       key={g._id}
