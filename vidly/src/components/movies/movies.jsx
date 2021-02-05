@@ -49,6 +49,7 @@ class Movies extends Form {
       pageSize,
       searchQuery
     );
+    const { user } = this.props;
     return (
       <React.Fragment>
         <div className="row mx-auto">
@@ -60,12 +61,14 @@ class Movies extends Form {
             />
           </div>
           <div className="col">
-            <button
-              className="btn btn-primary btn-submit"
-              style={{ marginBottom: 20 }}
-            >
-              <Link to="movies/new">New Movie</Link>
-            </button>
+            {user && (
+              <button
+                className="btn btn-primary btn-submit"
+                style={{ marginBottom: 20 }}
+              >
+                <Link to="movies/new">New Movie</Link>
+              </button>
+            )}
             <h3>Showing {moviesLength} movies in the database.</h3>
 
             <Search
@@ -78,6 +81,7 @@ class Movies extends Form {
               onDelete={this.deleteMov}
               onSort={this.handleSort}
               sortColumn={sortColumn}
+              user={user}
             ></MoviesTable>
             <Pagination
               itemsCount={moviesLength}
@@ -100,6 +104,10 @@ class Movies extends Form {
     } catch (e) {
       if (e.response && e.response.status === 404) {
         toast.error("This movie is not found. Already Deleted?");
+        this.setState({ movies: originalMovies });
+      }
+      if (e.response && e.response.status === 403) {
+        toast.error("Access Denied");
         this.setState({ movies: originalMovies });
       }
     }
