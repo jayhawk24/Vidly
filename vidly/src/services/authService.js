@@ -1,12 +1,13 @@
 import http, { setJwt } from "./httpService";
-import config from "./config.json";
 import jwtDecode from "jwt-decode";
 
 const tokenKey = "token";
+const apiEndpoint = "/auth";
+
 setJwt(getJwt());
 
 export async function login(email, password) {
-  const { data: jwt } = await http.post(config.authApi, { email, password });
+  const { data: jwt } = await http.post(apiEndpoint, { email, password });
   localStorage.setItem(tokenKey, jwt);
 }
 
