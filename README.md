@@ -2,6 +2,13 @@
 
 This project is deployed on heroku check it out [vidly24-Movies](https://vidly24.herokuapp.com).
 
+## Project Details , Functionalities & Implementations
+- Multiple reusable components like Like, Delete, List Group etc...
+- Complecated reusable components like Pagination, Routing etc...
+- Login and register functionality with node backend.
+- Access control and authorization using jwt tokens such that only Admin users can delete movies and editting required login.
+- Search movies by there name and sort table by any table head.
+
 ## Deploying Instructions
 
 In the project directory, you can run:
