@@ -1,6 +1,9 @@
-# Getting Started with Create React App
+# Vidly Movies
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is deployed on Heroku [Visit](https://vidly24.herokuapp.com/movies).
+
+## https://vidly24.herokuapp.com/movies
+ Give a minute for server to start as it is deployed on free tier.
 
 ## Available Scripts
 
